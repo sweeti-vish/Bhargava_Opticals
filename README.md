@@ -37,8 +37,8 @@ Python, Django, Django REST Framework, SQLite, HTML, CSS, JavaScript, Chart.js.
 ## Run it locally
 
 ```
-git clone https://github.com/sweeti-vish/bhargava-opticians.git
-cd bhargava-opticians
+git clone https://github.com/sweeti-vish/Bhargava_Opticals.git
+cd Bhargava_Opticals
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
