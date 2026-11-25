@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register | Bhargava Opticians</title>
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+</head>
+<body>
+<main class="page">
+  <a href="{% url 'home' %}">Back to home</a>
+  <h1 class="page-title">Create your account</h1>
+  <form method="post" class="rev-form" style="margin-top:20px">
+    {% csrf_token %}
+    {% if form.errors %}
+      <p class="status closed">Please fix the errors below and enter your password again.</p>
+    {% endif %}
+    {{ form.as_p }}
+    <button class="btn primary" type="submit">Register</button>
+    <p class="muted">Already registered? <a href="{% url 'login' %}">Log in</a></p>
+  </form>
+</main>
+</body>
+</html>

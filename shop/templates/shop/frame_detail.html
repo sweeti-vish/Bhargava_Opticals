@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ frame.name }} | Bhargava Opticians</title>
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+</head>
+<body>
+<main class="page">
+  <a href="{% url 'brand_frames' frame.brand.id %}">Back to {{ frame.brand.name }}</a>
+  <div class="frame-detail">
+    <img src="{{ frame.image.url }}" alt="{{ frame.name }}">
+    <div>
+      <h1 class="page-title">{{ frame.name }}</h1>
+      <p class="lead">{{ frame.brand.name }}, &#8377;{{ frame.price }}</p>
+      <p>{{ frame.description }}</p>
+      <p class="muted">Pickup only from the shop. We do not deliver.</p>
+      {% if frame.in_stock %}
+        <a class="btn primary" href="{% url 'order_frame' frame.id %}">Place order</a>
+      {% else %}
+        <p class="status closed">Out of stock</p>
+      {% endif %}
+    </div>
+  </div>
+</main>
+</body>
+</html>

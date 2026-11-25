@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} | Bhargava Opticians</title>
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+</head>
+<body>
+<main class="page">
+  <a href="{% url 'home' %}">Back to home</a>
+  <h1 class="page-title">{{ title }}</h1>
+  <div class="chips" style="margin:16px 0 28px">
+    <a href="{% url 'all_frames' %}">All</a>
+    {% for b in brands %}<a href="{% url 'brand_frames' b.id %}">{{ b.name }}</a>{% endfor %}
+  </div>
+  <div class="svc-grid">
+    {% for f in frames %}
+    <a class="svc" href="{% url 'frame_detail' f.id %}">
+      <img src="{{ f.image.url }}" alt="{{ f.name }}" style="width:100%;border-radius:10px">
+      <h3>{{ f.name }}</h3>
+      <p>{{ f.brand.name }}, &#8377;{{ f.price }}</p>
+    </a>
+    {% empty %}
+    <p>No frames added yet.</p>
+    {% endfor %}
+  </div>
+</main>
+</body>
+</html>

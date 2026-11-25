@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Write a review | Bhargava Opticians</title>
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+</head>
+<body>
+<main class="page">
+  <a href="{% url 'my_orders' %}">Back to my orders</a>
+  <h1 class="page-title">Write a review</h1>
+  <form method="post" class="rev-form" style="margin-top:20px">
+    {% csrf_token %}
+    <h3>{{ order.frame.brand.name }} - {{ order.frame.name }}</h3>
+    {% if error %}<p class="status closed">{{ error }}</p>{% endif %}
+    <label>Rating
+      <select name="rating" required>
+        <option value="">Choose a rating</option>
+        <option value="5">5 - Excellent</option>
+        <option value="4">4 - Good</option>
+        <option value="3">3 - Average</option>
+        <option value="2">2 - Poor</option>
+        <option value="1">1 - Very poor</option>
+      </select>
+    </label>
+    <label>Your feedback
+      <textarea name="feedback" rows="4" maxlength="400" required></textarea>
+    </label>
+    <p class="muted">Your review will appear on our website right away. Only your first name is shown.</p>
+    <button class="btn primary" type="submit">Submit review</button>
+  </form>
+</main>
+</body>
+</html>

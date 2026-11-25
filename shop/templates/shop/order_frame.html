@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Place order | Bhargava Opticians</title>
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+</head>
+<body>
+<main class="page">
+  <a href="{% url 'frame_detail' frame.id %}">Back to frame</a>
+  <h1 class="page-title">Place your order</h1>
+  <div class="frame-detail">
+    <img src="{{ frame.image.url }}" alt="{{ frame.name }}">
+    <form method="post" class="rev-form">
+      {% csrf_token %}
+      <h3>{{ frame.brand.name }} - {{ frame.name }}</h3>
+      <p class="lead">&#8377;{{ frame.price }}</p>
+      <p class="muted"><strong>Pickup only from the shop. We do not deliver.</strong></p>
+      <p class="muted"><strong>Your order will be ready within 2 days.</strong> We will let you know when it is ready for pickup.</p>
+      <p class="muted"><strong>Advance payment:</strong> please pay 50% (&#8377;{{ advance|floatformat:2 }}) at the shop or by UPI to confirm your order. The balance is paid when you collect your glasses.</p>
+        <div class="muted" style="text-align:center">
+        <img src="{% static 'shop/qr_demo.png' %}" alt="Demo payment QR" style="max-width:200px;width:100%">
+        <p>Sample QR for demonstration only.</p>
+      </div>
+      {% if error %}<p class="status closed">{{ error }}</p>{% endif %}
+      <label>Pickup shop
+        <select name="shop" required>
+          <option value="">Choose a shop</option>
+          {% for code, name in shops %}<option value="{{ code }}">{{ name }}, Sironj</option>{% endfor %}
+        </select>
+      </label>
+      <label>Note (optional) <textarea name="note" rows="2" maxlength="200"></textarea></label>
+      <button class="btn primary" type="submit">Confirm order</button>
+    </form>
+  </div>
+</main>
+</body>
+</html>

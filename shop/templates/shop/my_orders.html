@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My orders | Bhargava Opticians</title>
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+</head>
+<body>
+<main class="page">
+  <a href="{% url 'home' %}">Back to home</a>
+  <h1 class="page-title">My orders</h1>
+  <div class="svc-grid" style="margin-top:20px">
+    {% for o in orders %}
+    <article class="svc">
+      <img src="{{ o.frame.image.url }}" alt="{{ o.frame.name }}" style="width:100%;border-radius:10px">
+      <h3>{{ o.frame.name }}</h3>
+      <p>{{ o.frame.brand.name }}, &#8377;{{ o.price }}</p>
+      <p><strong>{{ o.get_status_display }}</strong></p>
+      <p class="muted">Pickup: {{ o.get_shop_display }}, {{ o.created|date:"d M Y" }}</p>
+      {% if o.status == 'PL' or o.status == 'RD' %}
+      <p class="muted">Ready by: {{ o.ready_by|date:"d M Y" }}</p>
+      {% endif %}
+            {% if o.status == 'PL' or o.status == 'RD' %}
+        {% if o.advance_paid %}
+          <p class="muted">Advance received. Balance to pay at pickup: &#8377;{{ o.balance }}</p>
+        {% else %}
+          <p class="status closed">Advance due: &#8377;{{ o.advance_amount }}</p>
+        {% endif %}
+      {% endif %}
+      {% if o.status == 'PU' %}
+      {% if o.review %}
+      <p class="muted">Thank you for your review.</p>
+      {% else %}
+          <a class="btn primary" href="{% url 'write_review' o.id %}">Write a review</a>
+        {% endif %}
+      {% endif %}
+    </article>
+    {% empty %}
+    <p>You have no orders yet. <a href="{% url 'all_frames' %}">Browse frames</a></p>
+    {% endfor %}
+  </div>
+</main>
+</body>
+</html>

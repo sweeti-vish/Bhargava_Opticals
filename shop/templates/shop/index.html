@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bhargava Opticians | Eye Testing, Frames, Sunglasses, Contact Lenses | Sironj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Mukta:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+  <button class="menu-btn" id="menuBtn" aria-label="Open search menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a href="#home" class="logo" aria-label="Bhargava Opticians home">
+    <svg viewBox="0 0 300 118" role="img" aria-hidden="true">
+      <path d="M40 38 Q40 14 74 14 L128 14 Q146 14 150 30 Q154 14 172 14 L226 14 Q260 14 260 38 L260 44 L246 44 L246 40 Q246 28 226 28 L176 28 Q164 28 162 40 L162 48 L138 48 L138 40 Q136 28 124 28 L74 28 Q54 28 54 40 L54 44 L40 44 Z" fill="#1f5fbf"/>
+      <text x="150" y="82" text-anchor="middle" font-family="Cormorant Garamond, serif" font-weight="700" font-size="50" fill="#d62828" letter-spacing="1">BHARGAVA</text>
+      <line x1="20" y1="100" x2="98" y2="100" stroke="#1f5fbf" stroke-width="2"/>
+      <text x="150" y="106" text-anchor="middle" font-family="Mukta, sans-serif" font-weight="700" font-size="17" fill="#1f5fbf" letter-spacing="1.5">OPTICIANS</text>
+      <line x1="202" y1="100" x2="280" y2="100" stroke="#1f5fbf" stroke-width="2"/>
+    </svg>
+  </a>
+  <div class="search" role="search">
+    <label for="q" class="sr">Search</label>
+    <input id="q" type="search" placeholder="Search services, brands, locations" autocomplete="off">
+    <span class="mode-chip" id="modeChip">All</span>
+    <ul class="results" id="results" hidden></ul>
+  </div>
+  <nav class="top-nav" aria-label="Main">
+    <a href="#home">Home</a><a href="#services">Services</a><a href="#about">Owner &amp; Reviews</a>
+  </nav>
+  <div class="account">
+    {% if user.is_authenticated %}
+      <span>Hi, {{ user.first_name|default:user.username }}</span>
+      <a href="{% url 'my_orders' %}">My orders</a>
+      {% if user.is_staff %}<a href="{% url 'dashboard' %}">Dashboard</a>{% endif %}
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}<button class="btn" type="submit">Logout</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+</div>
+</header>
+
+
+<aside class="drawer" id="drawer" aria-label="Search types" hidden>
+  <h2>Search by</h2>
+  <button class="mode active" data-mode="all">Everything</button>
+  <button class="mode" data-mode="service">Services</button>
+  <button class="mode" data-mode="brand">Brands</button>
+  <button class="mode" data-mode="location">Locations &amp; contact</button>
+  <p class="drawer-note">Pick a type, then use the search bar.</p>
+</aside>
+
+<main>
+<!-- PAGE 1 -->
+<section id="home" class="page home">
+  <div class="hero">
+    <div class="chart" aria-hidden="true">
+      <span>B</span><span>HA</span><span>RGA</span><span>VA</span><span>OPTICIANS</span>
+    </div>
+    <div class="hero-text">
+      <h1>Eye testing, frames and lenses in Sironj</h1>
+      <p>Bhargava Opticians has two shops in Sironj, M.P. Get your eyes tested and pick frames, sunglasses, contact lenses or a hearing machine from trusted brands.</p>
+      <div class="cta">
+        <a class="btn primary" href="tel:+916264036246">Call 6264036246</a>
+        <a class="btn" href="https://wa.me/916264036246" target="_blank" rel="noopener">WhatsApp us</a>
+      </div>
+      <p class="hindi">eye testing available here &middot; ear machine also available here!!</p>
+    </div>
+  </div>
+
+  <div class="dash" id="dashboard">
+    <article class="panel p-brands">
+      <h2>Brands we stock</h2>
+      <ul class="brand-list">
+        {% for b in brands %}
+        <li><a href="{% url 'brand_frames' b.id %}">{{ b.name }}</a></li>
+        {% endfor %}
+        <li><a href="{% url 'all_frames' %}">All frames</a></li>
+      </ul>
+    </article>
+    <article class="panel p-shops">
+      <h2>Our two shops</h2>
+      <div class="shop"><strong>Chandni Chowk</strong><span>Sironj (M.P.)</span></div>
+      <div class="shop"><strong>Chhipeti Bazar</strong><span>Sironj (M.P.)</span></div>
+      <p class="muted">Phone / WhatsApp: <a href="tel:+916264036246">6264036246</a>, <a href="tel:+917477016198">7477016198</a></p>
+    </article>
+    <article class="panel p-hours">
+      <h2>Shop hours</h2>
+      <div class="status" id="openStatus"></div>
+        <p class="muted">Open 10 am to 8 pm, Monday to Saturday. Closed on Sunday.</p>    </article>
+    <article class="panel p-quick">
+      <h2>What do you need?</h2>
+      <div class="chips">
+        <a href="#services" data-go="Eye Testing">Eye test</a>
+        <a href="#services" data-go="Frames">Frames</a>
+        <a href="#services" data-go="Sunglasses">Sunglasses</a>
+        <a href="#services" data-go="Contact Lenses">Contact lenses</a>
+        <a href="#services" data-go="Hearing Machines">Hearing machine</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- PAGE 2 -->
+<section id="services" class="page services">
+  <h2 class="page-title">Services</h2>
+  <p class="lead">Everything for your eyes and ears, under one roof.</p>
+  <div class="svc-grid" id="svcGrid"></div>
+</section>
+
+<!-- PAGE 3 -->
+<section id="about" class="page about">
+  <div class="owner">
+    <h2 class="page-title">About the owner</h2>
+    <div class="owner-card">
+      <div class="avatar" aria-hidden="true">B</div>
+      <div>
+        <h3>Priyansh Bhargava</h3>
+        <div class="about-opticals">
+          <p><strong>Bhargava Opticians: Your Vision, Our Priority!</strong></p>
+          <ul>
+            <li>Serving customers with trust and dedication for over 10 years.</li>
+            <li>Offering premium-quality spectacles and stylish eyewear.</li>
+            <li>A wide range of frames and lenses to suit every need.</li>
+            <li>Committed to providing the best quality at affordable prices.</li>
+            <li>Your trusted destination for clear vision, comfort, and style.</li>
+          </ul>
+        </div>
+        <p class="muted">Serving Sironj from Chandni Chowk and Chhipeti Bazar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reviews">
+    <h2 class="page-title">Customer reviews</h2>
+    <p class="muted">Here are reviews from customers. Their trust and support.</p>
+    <div class="rev-grid" id="revGrid"></div>
+
+        <div class="rev-grid">
+      {% for r in reviews %}
+      <article class="rev">
+        <div class="stars" aria-label="{{ r.rating }} out of 5">{{ r.stars }}</div>
+        <p>{{ r.feedback }}</p>
+        <strong>{{ r.order.customer.user.first_name }}</strong>
+      </article>
+      {% empty %}
+      <p class="muted">No reviews yet.</p>
+      {% endfor %}
+    </div>
+    <p class="muted">Bought something from us? Log in and write a review from <a href="{% url 'my_orders' %}">My orders</a>.</p>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="f-brand">
+    <strong>Bhargava Opticians</strong>
+    <span>Eye testing facilities available</span>
+  </div>
+  <div>
+    <strong>Visit</strong>
+    <span>Chandni Chowk, Sironj (M.P.)</span>
+    <span>Chhipeti Bazar, Sironj (M.P.)</span>
+  </div>
+  <div>
+    <strong>Contact</strong>
+    <a href="tel:+916264036246">6264036246</a>
+    <a href="tel:+917477016198">7477016198</a>
+  </div>
+  <p class="copy">&copy; <span id="yr"></span> Bhargava Opticians. All rights reserved.</p>
+</footer>
+
+<script src="{% static 'shop/script.js' %}"></script>
+</body>
+</html>

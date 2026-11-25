@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Owner dashboard | Bhargava Opticians</title>
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+<style>
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin:24px 0}
+  .kpi strong{display:block;font:700 34px "Cormorant Garamond",serif;color:var(--blue-d)}
+  .charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+  .charts canvas{max-height:300px}
+</style>
+</head>
+<body>
+<main class="page">
+  <a href="{% url 'home' %}">Back to home</a>
+  <h1 class="page-title">Owner dashboard</h1>
+
+  <div class="kpis">
+    <div class="panel kpi"><strong>{{ stats.orders }}</strong>Total orders</div>
+    <div class="panel kpi"><strong>{{ stats.picked_up }}</strong>Picked up</div>
+    <div class="panel kpi"><strong>&#8377;{{ stats.revenue }}</strong>Revenue (picked up)</div>
+    <div class="panel kpi"><strong>{{ stats.customers }}</strong>Customers</div>
+    <div class="panel kpi"><strong>{{ stats.repeat }}</strong>Repeat customers</div>
+    <div class="panel kpi"><strong>{% if stats.rating %}{{ stats.rating|floatformat:1 }} / 5{% else %}-{% endif %}</strong>Average rating</div>
+  </div>
+
+  <div class="charts">
+    <div class="panel"><h2>Orders per month</h2><canvas id="cMonth"></canvas></div>
+    <div class="panel"><h2>Top brands</h2><canvas id="cBrand"></canvas></div>
+    <div class="panel"><h2>Top frames</h2><canvas id="cFrame"></canvas></div>
+    <div class="panel"><h2>Order status</h2><canvas id="cStatus"></canvas></div>
+  </div>
+</main>
+
+{{ charts|json_script:"chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+  const d = JSON.parse(document.getElementById('chart-data').textContent);
+  const blue = '#1f5fbf', red = '#d62828';
+  const mk = (id, type, labels, data, colors) => new Chart(document.getElementById(id), {
+    type, data: {labels, datasets: [{data, backgroundColor: colors, borderColor: blue}]},
+    options: {plugins: {legend: {display: type === 'doughnut'}},
+              scales: type === 'doughnut' ? {} : {y: {beginAtZero: true, ticks: {precision: 0}}}}
+  });
+  mk('cMonth', 'bar', d.months, d.month_counts, blue);
+  mk('cBrand', 'bar', d.brands, d.brand_counts, red);
+  mk('cFrame', 'bar', d.frames, d.frame_counts, blue);
+  mk('cStatus', 'doughnut', d.status, d.status_counts, [blue, red, '#1a7f43', '#999']);
+</script>
+</body>
+</html>
