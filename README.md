@@ -35,7 +35,7 @@ Python, Django, Django REST Framework, SQLite, HTML, CSS, JavaScript, Chart.js.
 - Secrets and debug settings come from environment variables, not from the code.
 
 ## Run it locally
-
+```
 git clone https://github.com/sweeti-vish/Bhargava_Opticals.git
 cd Bhargava_Opticals
 python -m venv venv
